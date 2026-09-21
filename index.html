@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flores Amarillas - Amistad y Buenos Deseos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* Reset y configuración base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 25%, #f9ca24 50%, #f0932b 75%, #eb4d4b 100%);
+            min-height: 100vh;
+            color: #2c2c2c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Pantalla de bienvenida */
+        .welcome-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 215, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            transition: all 0.8s ease-in-out;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+            }
+            to {
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        .main-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #8b4513;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #654321;
+            margin-bottom: 20px;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .audio-notice {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .audio-notice p {
+            margin: 5px 0;
+            color: #654321;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-family: 'Cormorant Garamond', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Presentación principal */
+        .presentation {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            z-index: 5;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.8s ease-in-out;
+        }
+
+        .presentation.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.6s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-content {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-width: 600px;
+        }
+
+        .flower-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .slide-content h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #8b4513;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #654321;
+            text-align: justify;
+            margin-bottom: 25px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-family: 'Cormorant Garamond', serif;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Controles de navegación */
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 15px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease-in-out;
+            z-index: 15;
+        }
+
+        .navigation.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #8b4513;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 20%;
+        }
+
+        /* Control de música */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 20;
+        }
+
+        .music-control.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .music-control:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .music-icon {
+            font-size: 1.2rem;
+        }
+
+        .music-text {
+            font-size: 0.9rem;
+            color: #654321;
+            font-weight: 500;
+        }
+
+        /* Partículas de fondo */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particles::before,
+        .particles::after {
+            content: '🌼';
+            position: absolute;
+            font-size: 2rem;
+            animation: float 8s ease-in-out infinite;
+            opacity: 0.3;
+        }
+
+        .particles::before {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .particles::after {
+            top: 70%;
+            right: 15%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        /* Media queries para dispositivos móviles */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 3rem;
+            }
+            
+            .slide-content {
+                padding: 25px;
+                margin: 20px;
+            }
+            
+            .slide-content h2 {
+                font-size: 2rem;
+            }
+            
+            .slide-content p {
+                font-size: 1.1rem;
+            }
+            
+            .navigation {
+                bottom: 20px;
+                padding: 10px 20px;
+            }
+            
+            .progress-bar {
+                width: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .slide-content {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .slide-content h2 {
+                font-size: 1.8rem;
+            }
+            
+            .slide-content p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Audio de fondo -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="./Flores-Amarillas.mp3" type="audio/mpeg">
+        <source src="./flores-amarillas.mp3" type="audio/mpeg">
+        <!-- Nota: Copia el archivo MP3 a la misma carpeta que index.html -->
+    </audio>
+
+    <div class="container">
+        <!-- Control de música -->
+        <div class="music-control" id="musicControl" onclick="toggleMusic()">
+            <span class="music-icon" id="musicIcon">🎵</span>
+            <span class="music-text" id="musicText">Música</span>
+        </div>
+
+        <!-- Partículas de fondo -->
+        <div class="particles"></div>
+        
+        <!-- Pantalla de inicio -->
+        <div class="welcome-screen active" id="welcomeScreen">
+            <div class="welcome-content">
+                <h1 class="main-title">Flores Amarillas</h1>
+                <p class="subtitle">Un mensaje de amistad en pétalos dorados</p>
+                <div class="audio-notice">
+                    <p>🎵 Con la música de "Flores Amarillas" - Floricienta</p>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Asegúrate de tener el volumen activado para la experiencia completa</p>
+                </div>
+                <button class="start-btn" onclick="startPresentation()">Comenzar</button>
+            </div>
+        </div>
+
+        <!-- Presentación principal -->
+        <div class="presentation" id="presentation">
+            <div class="slide active" id="slide1">
+                <div class="slide-content">
+                    <div class="flower-icon">🌻</div>
+                    <h2>El Lenguaje de las Flores Amarillas</h2>
+                    <p>En el jardín del alma, las flores amarillas susurran secretos milenarios. Son mensajeras de luz que hablan de alegría profunda, de amistad sincera y de un cariño que florece con la calidez del sol. Cada pétalo dorado es una caricia visual que toca el corazón y despierta sonrisas eternas.</p>
+                </div>
+            </div>
+
+            <div class="slide" id="slide2">
+                <div class="slide-content">
+                    <div class="flower-icon">🌼</div>
+                    <h2>Girasoles: Energía y Alegría</h2>
+                    <p>Como el girasol que gira su rostro hacia la luz, así tu energía ilumina los días de quienes te rodean. En cada amanecer traes tu sonrisa, en cada atardecer dejas un rastro de alegría. Eres una luz cálida que hace brillar las mañanas y convertir los momentos en recuerdos preciados.</p>
+                </div>
+            </div>
+
+            <div class="slide" id="slide3">
+                <div class="slide-content">
+                    <div class="flower-icon">🌷</div>
+                    <h2>Tulipanes Amarillos: Esperanza Eterna</h2>
+                    <p>Cada tulipán amarillo que florece en primavera lleva el mensaje de un nuevo comienzo. Como estos pétalos sedosos que se abren al mundo, una amistad se despliega día a día, construyendo un futuro lleno de momentos compartidos, risas sinceras y la certeza de que podemos todos alcanzar nuevas alturas.</p>
+                </div>
+            </div>
+
+            <div class="slide" id="slide4">
+                <div class="slide-content">
+                    <div class="flower-icon">🌹</div>
+                    <h2>Rosas Amarillas: Amistad del Alma</h2>
+                    <p>Las rosas amarillas honran ese vínculo sagrado que une corazones amigos. Eres un confidente, una compañera de aventuras, la persona que conoce tus penas y alegrías y aún así elige caminar a tu lado. En ti se encuentra, no solo una amistad sincera, sino un refugio para el alma.</p>
+                </div>
+            </div>
+
+            <div class="slide" id="slide5">
+                <div class="slide-content">
+                    <div class="flower-icon">💐</div>
+                    <h2>Para Ti</h2>
+                    <p>Este ramo virtual de flores amarillas lleva envuelto mucho cariño. Cada pixel dorado es un deseo silencioso de felicidad, cada animación una caricia amigable. Que estas flores digitales florezcan en tu corazón y te recuerden que eres una de esas luces que ilumina la vida, posees esa sonrisa que guardar en la memoria y esa amistad que hace que todo valga la pena.</p>
+                    <button class="restart-btn" onclick="restartPresentation()">Ver de Nuevo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controles de navegación -->
+        <div class="navigation" id="navigation">
+            <button class="nav-btn prev-btn" onclick="previousSlide()">‹</button>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <button class="nav-btn next-btn" onclick="nextSlide()">›</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentSlide = 0;
+        const totalSlides = 5;
+        let musicPlaying = false;
+        let musicEnabled = false;
+        let autoAdvanceInterval = null;
+        const slideAutoAdvanceTime = 8000; // 8 segundos por slide
+
+        // Función para iniciar la presentación
+        function startPresentation() {
+            console.log('Iniciando presentación...');
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const presentation = document.getElementById('presentation');
+            const navigation = document.getElementById('navigation');
+            const musicControl = document.getElementById('musicControl');
+            
+            // Ocultar pantalla de bienvenida
+            welcomeScreen.classList.add('hidden');
+            
+            // Mostrar elementos principales después de la transición
+            setTimeout(() => {
+                presentation.classList.add('active');
+                navigation.classList.add('active');
+                musicControl.classList.add('active');
+                showSlide(0);
+                
+                // Intentar reproducir música después de que todo esté visible
+                setTimeout(() => {
+                    initializeMusic();
+                }, 500);
+                
+                // Iniciar auto-avance después de mostrar el primer slide
+                setTimeout(() => {
+                    console.log('Iniciando auto-avance de slides');
+                    startAutoAdvance();
+                }, 2000);
+            }, 800);
+        }
+
+        // Función para inicializar y reproducir música
+        function initializeMusic() {
+            console.log('Iniciando música...');
+            const audio = document.getElementById('backgroundMusic');
+            
+            if (audio) {
+                console.log('Elemento audio encontrado');
+                audio.volume = 0.4;
+                
+                // Escuchar eventos
+                audio.addEventListener('loadstart', () => console.log('Comenzando a cargar audio'));
+                audio.addEventListener('canplay', () => console.log('Audio listo para reproducir'));
+                audio.addEventListener('playing', () => console.log('Audio reproduciéndose'));
+                audio.addEventListener('error', (e) => {
+                    console.error('Error de audio:', e);
+                     console.log('Usando audio generado como alternativa');
+                     createFriendlyAudio();
+                });
+                
+                // Forzar carga del audio
+                audio.load();
+                
+                // Intentar reproducir después de un pequeño delay
+                setTimeout(() => {
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            musicPlaying = true;
+                            musicEnabled = true;
+                            updateMusicDisplay();
+                            console.log('✓ Música reproduciéndose desde archivo');
+                        }).catch(error => {
+                            console.warn('No se pudo reproducir el archivo:', error);
+                            console.log('Usando audio generado');
+                            createFriendlyAudio();
+                        });
+                    }
+                }, 1000);
+            } else {
+                console.error('Elemento audio no encontrado');
+                createFriendlyAudio();
+            }
+        }
+
+         // Función para crear audio amistoso generado
+         function createFriendlyAudio() {
+            try {
+                console.log('Creando audio sintético...');
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                const playNote = (frequency, duration, startTime, volume = 0.1) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(frequency, startTime);
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, startTime);
+                    gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                    
+                    oscillator.start(startTime);
+                    oscillator.stop(startTime + duration);
+                };
+
+                // Melodía alegre inspirada en "Flores Amarillas"
+                const melody = [
+                    {note: 523.25, duration: 0.6}, // C5
+                    {note: 587.33, duration: 0.6}, // D5
+                    {note: 659.25, duration: 0.6}, // E5
+                    {note: 698.46, duration: 0.9}, // F5
+                    {note: 659.25, duration: 0.6}, // E5
+                    {note: 587.33, duration: 0.6}, // D5
+                    {note: 523.25, duration: 1.2}, // C5
+                    {note: 587.33, duration: 0.6}, // D5
+                    {note: 659.25, duration: 0.9}, // E5
+                    {note: 698.46, duration: 0.6}, // F5
+                    {note: 783.99, duration: 1.2}, // G5
+                    {note: 698.46, duration: 0.6}, // F5
+                    {note: 659.25, duration: 1.8}  // E5
+                ];
+
+                let currentTime = audioContext.currentTime;
+                
+                const playMelody = () => {
+                    if (musicPlaying && musicEnabled) {
+                        melody.forEach((note, index) => {
+                            playNote(note.note, note.duration, currentTime + (index * 0.7));
+                        });
+                    }
+                };
+
+                // Reproducir melodía inicial
+                playMelody();
+                
+                musicPlaying = true;
+                musicEnabled = true;
+                updateMusicDisplay();
+                console.log('✓ Audio sintético iniciado');
+                
+                // Repetir cada 12 segundos
+                const musicInterval = setInterval(() => {
+                    if (musicEnabled && musicPlaying) {
+                        currentTime = audioContext.currentTime;
+                        playMelody();
+                    } else {
+                        clearInterval(musicInterval);
+                    }
+                }, 12000);
+                
+            } catch (error) {
+                console.log('Web Audio API no disponible:', error);
+                musicEnabled = false;
+                musicPlaying = false;
+                updateMusicDisplay();
+            }
+        }
+
+        // Función para alternar música
+        function toggleMusic() {
+            const audio = document.getElementById('backgroundMusic');
+            
+            if (musicPlaying) {
+                // Pausar música
+                if (audio && audio.pause) {
+                    audio.pause();
+                }
+                musicPlaying = false;
+                musicEnabled = false;
+            } else {
+                // Iniciar música
+                if (audio && audio.src) {
+                    // Intentar reproducir archivo MP3
+                    audio.play().then(() => {
+                        musicPlaying = true;
+                        musicEnabled = true;
+                    }).catch(() => {
+                     // Si falla, usar audio generado
+                         createFriendlyAudio();
+                    });
+                } else {
+                     // Usar audio generado
+                     createFriendlyAudio();
+                }
+            }
+            updateMusicDisplay();
+        }
+
+        // Función para actualizar la visualización del control de música
+        function updateMusicDisplay() {
+            const musicIcon = document.getElementById('musicIcon');
+            const musicText = document.getElementById('musicText');
+            
+            if (!musicEnabled) {
+                musicIcon.textContent = '🔇';
+                musicText.textContent = 'Sin audio';
+            } else if (musicPlaying) {
+                musicIcon.textContent = '🎵';
+                musicText.textContent = 'Pausar';
+            } else {
+                musicIcon.textContent = '⏸️';
+                musicText.textContent = 'Reproducir';
+            }
+        }
+
+        // Función para mostrar un slide específico
+        function showSlide(slideIndex) {
+            console.log('Mostrando slide:', slideIndex);
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === slideIndex) {
+                    slide.classList.add('active');
+                }
+            });
+            currentSlide = slideIndex;
+            updateProgress();
+            updateNavigationButtons();
+            
+            // Reiniciar auto-avance
+            startAutoAdvance();
+        }
+        
+        // Función para iniciar auto-avance
+        function startAutoAdvance() {
+            // Limpiar intervalo anterior
+            if (autoAdvanceInterval) {
+                clearInterval(autoAdvanceInterval);
+            }
+            
+            // Solo auto-avanzar si no estamos en el último slide
+            if (currentSlide < totalSlides - 1) {
+                console.log('Auto-avance iniciado para slide', currentSlide + 1);
+                autoAdvanceInterval = setInterval(() => {
+                    if (currentSlide < totalSlides - 1) {
+                        console.log('Auto-avanzando al slide:', currentSlide + 1);
+                        currentSlide++;
+                        showSlide(currentSlide);
+                    } else {
+                        console.log('Llegó al último slide, deteniendo auto-avance');
+                        clearInterval(autoAdvanceInterval);
+                    }
+                }, slideAutoAdvanceTime);
+            }
+        }
+        
+        // Función para detener auto-avance
+        function stopAutoAdvance() {
+            if (autoAdvanceInterval) {
+                console.log('Deteniendo auto-avance');
+                clearInterval(autoAdvanceInterval);
+                autoAdvanceInterval = null;
+            }
+        }
+
+        // Función para ir al siguiente slide
+        function nextSlide() {
+            stopAutoAdvance(); // Detener auto-avance cuando se navega manualmente
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        // Función para ir al slide anterior
+        function previousSlide() {
+            stopAutoAdvance(); // Detener auto-avance cuando se navega manualmente
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Función para reiniciar la presentación
+        function restartPresentation() {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const presentation = document.getElementById('presentation');
+            const navigation = document.getElementById('navigation');
+            const musicControl = document.getElementById('musicControl');
+            
+            stopAutoAdvance(); // Detener auto-avance
+            
+            presentation.classList.remove('active');
+            navigation.classList.remove('active');
+            musicControl.classList.remove('active');
+            
+            setTimeout(() => {
+                welcomeScreen.classList.remove('hidden');
+                currentSlide = 0;
+                updateProgress();
+            }, 500);
+        }
+
+        // Función para actualizar la barra de progreso
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
+            progress.style.width = progressPercentage + '%';
+        }
+
+        // Función para actualizar botones de navegación
+        function updateNavigationButtons() {
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            
+            if (prevBtn) prevBtn.disabled = currentSlide === 0;
+            if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
+        }
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página cargada, inicializando...');
+            updateProgress();
+            updateNavigationButtons();
+            updateMusicDisplay(); // Inicializar display de música
+            
+            // Asegurar que el primer slide esté visible
+            const firstSlide = document.getElementById('slide1');
+            if (firstSlide) {
+                firstSlide.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
